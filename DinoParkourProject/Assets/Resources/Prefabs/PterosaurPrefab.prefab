@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7050753759590451432}
   - component: {fileID: 2297738610351716184}
   - component: {fileID: 7076253460280267099}
-  - component: {fileID: 1884698117466647045}
+  - component: {fileID: -8817754575247610969}
   m_Layer: 6
   m_Name: PterosaurPrefab
   m_TagString: Untagged
@@ -103,16 +103,36 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!65 &1884698117466647045
-BoxCollider:
+--- !u!60 &-8817754575247610969
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6480071616362757363}
+  m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.5, y: 1.5, z: 1}
-  m_Center: {x: 0, y: -0.2, z: 0}
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.7, y: 2.05}
+    newSize: {x: 2.7, y: 2.05}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.8403236, y: 0.36909392}
+      - {x: -1.35, y: -0.155}
+      - {x: -1.3378966, y: -0.3226538}
+      - {x: -0.7493042, y: -0.36512953}
+      - {x: -0.0818283, y: -1.0144014}
+      - {x: 1.35, y: -1.025}
+      - {x: 1.3441427, y: -0.46221685}
+      - {x: -0.458042, y: 1.025}

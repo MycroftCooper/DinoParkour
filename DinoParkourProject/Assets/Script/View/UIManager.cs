@@ -13,23 +13,54 @@ public class UIManager : MonoBehaviour
     public GameObject gamePanel;
     public GameObject pausePanel;
     public GameObject GGPanel;
-    public GameObject NewBestScoreText;
 
-    private Text nowScoreText;
-    private Text bestScoreText;
-
-
-
+    void Start()
+    {
+        GC = GameObject.Find("GameController").GetComponent<GameController>();
+        initStartPage3Btn();
+    }
+    void Update()
+    {
+        switch (GC.gameState)
+        {
+            case 0:
+                //游戏开始界面
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+                    OnTheBtn();
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                    lastBtn();
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                    nextBtn();
+                break;
+            case 1:
+                //游戏中
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+                    OnPause();
+                break;
+            case 2:
+                //暂停中
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+                    OnContinue();
+                break;
+            case 3:
+                //游戏失败界面
+                if (Input.GetKeyDown(KeyCode.Space))
+                    OnRestart();
+                break;
+        }
+    }
+    //-----------------------------------开始页面-------------------------------------------
     private LinkedList<Image> startPageBtnImg;
     private LinkedListNode<Image> onBtnImg;
     private List<Sprite> uiSprites;
     private Sprite btnBGSprite;
     private Sprite onBtnBGSprite;
 
-    void Start()
-    {
-        GC = GameObject.Find("GameController").GetComponent<GameController>();
+    private GameObject startPageUpBtn;
+    private GameObject startPageDownBtn;
 
+    private void initStartPage3Btn()
+    {
         uiSprites = new List<Sprite>(Resources.LoadAll<Sprite>("UI/UI"));
         btnBGSprite = uiSprites.Find(p => p.name == "UI_BtnBG");
         onBtnBGSprite = uiSprites.Find(p => p.name == "UI_OnBtnBG");
@@ -40,7 +71,6 @@ public class UIManager : MonoBehaviour
         startPageBtnImg.AddLast(GameObject.Find("ExitBtn").GetComponent<Image>());
         onBtnImg = startPageBtnImg.First;
     }
-    //-----------------------------------开始页面-------------------------------------------
     public void nextBtn()
     {
         onBtnImg.Value.sprite = btnBGSprite;
@@ -83,14 +113,40 @@ public class UIManager : MonoBehaviour
         else
             OnExitGame();
     }
+    //--------------------------------------------------------------------------------------
+    public void changePlayer()
+        => GC.changePlayer();
     //-----------------------------------游戏页面-------------------------------------------
+    private Text nowScoreText;
+    private Text bestScoreText;
+    public GameObject NewBestScoreText;
+
+    public void UpdateScore(int score)
+    => nowScoreText.text = score.ToString();
+    public void UpdateBestScore(int score)
+        => bestScoreText.text = score.ToString();
+
     public void OnStartGame()
     {
         stratPanel.SetActive(false);
         gamePanel.SetActive(true);
         nowScoreText = GameObject.Find("NowScoreText").GetComponent<Text>();
         bestScoreText = GameObject.Find("BestScoreText").GetComponent<Text>();
-
+        if (GameObject.Find("UpBtn") != null)
+        {
+            startPageUpBtn = GameObject.Find("UpBtn");
+            startPageDownBtn = GameObject.Find("DownBtn");
+        }
+        if (!GC.IsDino)
+        {
+            startPageUpBtn.SetActive(false);
+            startPageDownBtn.SetActive(false);
+        }
+        else
+        {
+            startPageUpBtn.SetActive(true);
+            startPageDownBtn.SetActive(true);
+        }
         GC.GameStart();
     }
     public void OnAboutGame()
@@ -137,43 +193,7 @@ public class UIManager : MonoBehaviour
         gamePanel.SetActive(false);
         GGPanel.SetActive(false);
         stratPanel.SetActive(true);
-        GC.CC.moveToStartPgaePos();
-        GC.gameState = 0;
-    }
-
-    public void UpdateScore(int score)
-    => nowScoreText.text = score.ToString();
-    public void UpdateBestScore(int score)
-        => bestScoreText.text = score.ToString();
-
-    void Update()
-    {
-        switch (GC.gameState)
-        {
-            case 0:
-                //游戏开始界面
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-                    OnTheBtn();
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                    lastBtn();
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                    nextBtn();
-                break;
-            case 1:
-                //游戏中
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
-                    OnPause();
-                break;
-            case 2:
-                //暂停中
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
-                    OnContinue();
-                break;
-            case 3:
-                //游戏失败界面
-                if (Input.GetKeyDown(KeyCode.Space))
-                    OnRestart();
-                break;
-        }
+        GC.ExitGame();
+        initStartPage3Btn();
     }
 }

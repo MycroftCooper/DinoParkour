@@ -11,79 +11,64 @@ public class DinoController : MonoBehaviour
         get
         {
             state = (DinoState)animator.GetInteger("DinoState");
-            return state; }
+            return state; 
+        }
         set
         {
+            if (state == value)
+                return;
             state = value;
             animator.SetInteger("DinoState", (int)value);
-            switch (value)
-            {
-                case DinoState.Run:
-                    run();
-                    break;
-                case DinoState.Jump:
-                    jump();
-                    break;
-                case DinoState.Down:
-                    down();
-                    break;
-                case DinoState.Dead:
-                    dead();
-                    break;
-            }
+            updateCollision(state);
+            if (state == DinoState.Dead)
+                dinoRigidbody.isKinematic = true;
         }
     }
 
     private GameController GC;
     public Animator animator;
-    private List<Vector3> dinoBoxColliderSize
-        = new List<Vector3> { new Vector3(2.5f, 3f, 1f), new Vector3(4f, 2f, 1f) };
-    public Rigidbody dinoRigidbody;
+    private List<Sprite> dinoSprites;
+    public Rigidbody2D dinoRigidbody;
+    private SpriteRenderer SR;
 
     private void Start()
     {
         GC = GameObject.Find("GameController").GetComponent<GameController>();
         animator = gameObject.GetComponent<Animator>();
-        dinoRigidbody = gameObject.GetComponent<Rigidbody>();
+        dinoRigidbody = gameObject.GetComponent<Rigidbody2D>();
+        gameObject.AddComponent<PolygonCollider2D>();
+        dinoSprites = new List<Sprite>(Resources.LoadAll<Sprite>("EntityRes/Dino"));
+        SR = gameObject.GetComponent<SpriteRenderer>();
     }
     private void Update()
     {
-        if (GC.gameState != 1)
+        if (GC.gameState != 1 || !GC.IsDino)
             return;
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) && state != DinoState.Jump && transform.position.y == 0)
             State = DinoState.Jump;
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow) && state != DinoState.Down)
             State = DinoState.Down;
-        if (Input.GetKeyUp(KeyCode.DownArrow))
+        if (Input.GetKeyUp(KeyCode.DownArrow) && state != DinoState.Run)
             State = DinoState.Run;
     }
-
-    private void setBoxCollider(bool isDown)
+    void updateCollision(DinoState nowState)
     {
-        BoxCollider bc = gameObject.GetComponent<BoxCollider>();
-        if (isDown)
-            bc.size = dinoBoxColliderSize[1];
+        if (nowState == DinoState.Run)
+            SR.sprite = dinoSprites.Find(p => p.name == "Dino_Run1");
+        else if (nowState == DinoState.Down)
+            SR.sprite = dinoSprites.Find(p => p.name == "Dino_Down1");
         else
-            bc.size = dinoBoxColliderSize[0];
-    }
-    private void run()
-        => setBoxCollider(false);
-    private void jump()
-    {
-        if (transform.position.y > 0)
             return;
-        setBoxCollider(false);
+        List<PolygonCollider2D> pc2ds = new List<PolygonCollider2D>(animator.gameObject.GetComponents<PolygonCollider2D>());
+        foreach (PolygonCollider2D i in pc2ds)
+            Destroy(i);
+        animator.gameObject.AddComponent<PolygonCollider2D>();
     }
-    private void down()
-        => setBoxCollider(true);
-    private void dead()
-        => dinoRigidbody.isKinematic = true;
-
-    void OnCollisionEnter(Collision collisionInfo)
+    void OnCollisionEnter2D(Collision2D collisionInfo)
     {
-        if (collisionInfo.gameObject.name == "LandPrefab" || collisionInfo.gameObject.name == "LandPrefab(Clone)")
+        if (GC.gameState != 1 || !GC.IsDino)
             return;
         State = DinoState.Dead;
-        GameObject.Find("GameController").GetComponent<GameController>().GameOver(); 
+        GC.gameObject.GetComponent<GameController>().GameOver(); 
     }
 }

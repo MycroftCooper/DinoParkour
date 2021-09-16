@@ -6,10 +6,14 @@ using UnityEngine;
 [Serializable]
 public class GameArchive
 {
-    public int bestScore;
+    public int bestScore0;
+    public int bestScore1;
     private static string archivePath = Application.persistentDataPath + "/bestscore.save";
-    public GameArchive(int bestScore) => this.bestScore = bestScore;
-
+    public GameArchive(int bestScore0, int bestScore1)
+    {
+        this.bestScore0 = bestScore0;
+        this.bestScore1 = bestScore1;
+    }
     public static void saveGameArchive(GameArchive ga)
     {
         BinaryFormatter bf = new BinaryFormatter();

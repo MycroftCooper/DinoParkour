@@ -1,6 +1,6 @@
 ---
 title: DinoParkour开发文档
-date: 2021-09-10 21:02:06
+date: 2021-09-11 21:02:06
 tags:
 	- 项目开发文档
 categories: 
@@ -10,12 +10,32 @@ typora-root-url: ..
 
 # DinoParkour开发文档
 
+**项目信息：**
+项目负责人：买烤麸烤饼
+程序：买烤麸烤饼
+美工：买烤麸烤饼，一周
+音效：洛一
+项目开发周期：2021.9.1- 2021.9.10
+
+**版本信息：**
+
+- v1.0  完成小恐龙跑酷的基本玩法
+- v1.5
+  - 将操作按钮放到了屏幕两侧
+  - 解决了摄像头无法归位的BUG
+  - 重置了所有碰撞器，精细化了碰撞检测
+  - 增加了全新的翼龙模式与全新的BUG
+
+- v2.0
+  - 降低了翼龙的敏感度
+  - 修复了翼龙模式天空块之间会有缝隙的bug
+
 # 1. 玩法分析
 
 **游戏原型：**
 chrome://dino/
 
-![游戏原型](images/DinoParkour开发文档/image-20210909224440720.png)
+![游戏原型](/images/DinoParkour开发文档/image-20210909224440720.png)
 
 该游戏是谷歌浏览器自带的一款恐龙跑酷小游戏。
 当在无网络的情况下使用谷歌浏览器访问网站时会出现一个小恐龙，再按下空格就可以触发这个小游戏了。
@@ -83,7 +103,7 @@ chrome://dino/
 - 死亡状态Dead:4 (1帧)
 
 **状态机**如下图所示：
-![Dino状态机](./images/DinoParkour开发文档/image-20210909223752586.png)
+![Dino状态机](/images/DinoParkour开发文档/image-20210909223752586.png)
 
 > 其中:
 >
@@ -131,7 +151,7 @@ chrome://dino/
 - 是个时间环，通过转动来展示昼夜变化
 - 时间环的转动要与灯光配合，展示昼夜光线变化
 
-## 2.2 美术分析
+## 2.2 美术需求分析
 
 **美术风格：**
 彩色像素风格
@@ -147,11 +167,11 @@ chrome://dino/
 5. 各种UI制作
 6. 游戏LOGO
 
-## 2.3 UI分析
+## 2.3 UI需求分析
 
  ### 2.3.1 UI需求树
 
-![UI需求树](images/DinoParkour开发文档/image-20210909231310761.png)
+![UI需求树](/images/DinoParkour开发文档/image-20210909231310761.png)
 
 ### 2.3.2 细节需求
 
@@ -187,43 +207,43 @@ chrome://dino/
 
 ## 3.1 工程类图
 
-![Dino工程类图](images/DinoParkour开发文档/Dino工程类图.png)
+![Dino工程类图](/images/DinoParkour开发文档/Dino工程类图.png)
 
 ## 3.2 UI实现
 
 **开始界面UI：**
 
-![image-20210910160306730](images/DinoParkour开发文档/image-20210910160306730.png)
+![image-20210910160306730](/images/DinoParkour开发文档/image-20210910160306730.png)
 
-![开始界面](images/DinoParkour开发文档/image-20210910153817356.png)
+![开始界面](/images/DinoParkour开发文档/image-20210910153817356.png)
 
 
 
 **关于界面UI：**
 
-![image-20210910160422573](images/DinoParkour开发文档/image-20210910160422573.png)
+![image-20210910160422573](/images/DinoParkour开发文档/image-20210910160422573.png)
 
-![关于界面](images/DinoParkour开发文档/image-20210910154143211.png)
+![关于界面](/images/DinoParkour开发文档/image-20210910154143211.png)
 
 **游戏界面UI：**
 
-![image-20210910160454308](images/DinoParkour开发文档/image-20210910160454308.png)
+![image-20210910160454308](/images/DinoParkour开发文档/image-20210910160454308.png)
 
-![游戏界面](images/DinoParkour开发文档/image-20210910153929870.png)
+![游戏界面](/images/DinoParkour开发文档/image-20210910153929870.png)
 
 **暂停界面UI：**
 
-![image-20210910160519755](images/DinoParkour开发文档/image-20210910160519755.png)
+![image-20210910160519755](/images/DinoParkour开发文档/image-20210910160519755.png)
 
-![暂停界面](images/DinoParkour开发文档/image-20210910154116353.png)
+![暂停界面](/images/DinoParkour开发文档/image-20210910154116353.png)
 
 **失败界面UI：**
 
-![image-20210910160553087](images/DinoParkour开发文档/image-20210910160553087.png)
+![image-20210910160553087](/images/DinoParkour开发文档/image-20210910160553087.png)
 
-![失败界面](images/DinoParkour开发文档/image-20210910154015705.png)
+![失败界面](/images/DinoParkour开发文档/image-20210910154015705.png)
 
-## 3.3 技术实现两点与难点
+## 3.3 技术实现亮点与难点
 
 ### 3.3.1 开始界面UI的多种响应方式
 
@@ -237,7 +257,7 @@ chrome://dino/
 
 其中鼠标操作与键盘方向键操作时，会有一个选中的按钮变色的效果。
 
-![image-20210910163606363](images/DinoParkour开发文档/image-20210910163606363.png)
+![image-20210910163606363](/images/DinoParkour开发文档/image-20210910163606363.png)
 当使用键盘选中about按钮或者光标落在上面时，颜色变浅。
 
 该效果实现的难点主要在鼠标与键盘两种操作方式上，移动端的触摸输入使用普通的按钮响应函数即可
@@ -385,10 +405,10 @@ public void setSelectBtn(Image btnImg)
 #### 3.3.2.1 状态机的设置
 
 根据实体分析中对小恐龙Dino的状态机分析图(下图)
-![Dino状态机](./images/DinoParkour开发文档/image-20210909223752586.png)
+![Dino状态机](/images/DinoParkour开发文档/image-20210909223752586.png)
 
 可以在Unity中制作动画器，并设置好状态机
-![动画器](images/DinoParkour开发文档/image-20210910201330605.png)
+![动画器](/images/DinoParkour开发文档/image-20210910201330605.png)
 
 动画转变的判断参数是 int DinoState
 
@@ -507,7 +527,7 @@ public class DinoController : MonoBehaviour
   该状态的转换过程不可以打断当前状态，只能等当前状态的动画播放完毕才能进行状态转换
 
 想在Unity的状态机中实现这种设定，需要更改**有退出时间**属性：
-![image-20210910203147899](images/DinoParkour开发文档/image-20210910203147899.png)
+![image-20210910203147899](/images/DinoParkour开发文档/image-20210910203147899.png)
 
 - 可打断则不勾选
 - 不可打断则勾选
@@ -627,10 +647,10 @@ public class GamePageBtnController : MonoBehaviour, IPointerDownHandler, IPointe
 
 表现如下图所示：
 **正午时：**
-![image-20210910183325819](images/DinoParkour开发文档/image-20210910183325819.png)
+![image-20210910183325819](/images/DinoParkour开发文档/image-20210910183325819.png)
 
 **午夜时：**
-![image-20210910183450256](images/DinoParkour开发文档/image-20210910183450256.png)
+![image-20210910183450256](/images/DinoParkour开发文档/image-20210910183450256.png)
 
 #### 3.3.3.2 解决思路
 
@@ -759,7 +779,7 @@ public class LightController : MonoBehaviour
   因为2D精灵使用的是默认的2D图片材质
   想要让3D灯光在2D精灵图片上有效果，需要自定义材质
   如下图所示：
-  ![image-20210910200427517](images/DinoParkour开发文档/image-20210910200427517.png)
+  ![image-20210910200427517](/images/DinoParkour开发文档/image-20210910200427517.png)
   其中渲染模式(RenderingMode)要设置为：Cutout，其它设置根据需求进行更改。
 
 ### 3.3.4 不同画面比的自适应匹配
@@ -817,7 +837,7 @@ public void initBorder()
 - 当前画面比例下与默认画面比例的缩放比
 
 其中物体运行到视野外销毁还可以使用另一种方法：
-使用**OnBecameInvisible()**函数
+使用 **OnBecameInvisible()** 函数
 
 ```c#
 //物体进入视野内触发响应函数
@@ -826,3 +846,6 @@ public void OnBecameVisible(){}
 public void OnBecameInvisible(){}
 ```
 
+# 4. 附录
+
+GitHub链接：https://github.com/MycroftCooper/DinoParkour

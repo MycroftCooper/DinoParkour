@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6536702793603167548}
   - component: {fileID: 8488518148337562089}
-  - component: {fileID: 757317625143656548}
+  - component: {fileID: 9216935406551957912}
   m_Layer: 6
   m_Name: LandPrefab
   m_TagString: Untagged
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &757317625143656548
+--- !u!114 &9216935406551957912
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 132309199804503741}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cd015a5d46fd7a47adde30b3b43fa01, type: 3}
+  m_Script: {fileID: 11500000, guid: b79e27939a9420c4a8d839bdebc2f77f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0

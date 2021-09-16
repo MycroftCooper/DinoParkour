@@ -1,73 +1,94 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class LandFactory
+public abstract class CarrierFactory
 {
+    public float width;
+    //基础速度
+    public float baseSpeed = 15f;
+    //增速步长
+    public float addSpeedStep = 0.05f;
+
+    //可放置位置
+    public List<Vector3> placeablePosition;
+    public List<float> heightPosition;
+
+    //地块预制体
+    public GameObject prefab;
+
+    //初始化位置 31.5
+    public Vector3 initPosition;
+    //销毁位置
+    public Vector3 destroyPosition;
+    //默认缩放
+    public Vector3 defaultScale;
+
+    public abstract CarrierController getCarrier(bool isEmpty);
+    public abstract List<CarrierController> getStartCarriers();
+    public abstract void putEntity(CarrierController cc);
+}
+
+public class LandFactory : CarrierFactory
+{
+    public LandFactory()
+    {
+        width = 24f;
+        //可放置位置
+        placeablePosition = new List<Vector3> { new Vector3(-1f, -0.1f, -2f), new Vector3(1f, -0.1f, -2f) };
+        heightPosition = new List<float> { 0, 0.05f, 0.2f };
+
+        //地块预制体
+        prefab = Resources.Load<GameObject>("Prefabs/LandPrefab");
+
+        //初始化位置 31.5
+        initPosition = new Vector3(100f, 1.3f, 0f);
+        //销毁位置
+        destroyPosition = new Vector3(-999f, 1.3f, 0f);
+        //默认缩放
+        defaultScale = new Vector3(16f, 16f, 1f);
+    }
     //是仙人掌的概率
     public static float isCactu = 0.6f;
     //是翼龙的概率
     public static float isPterosaur = 1 - isCactu;
 
-    //基础速度
-    public static float baseSpeed = 15f;
-    //增速步长
-    public static float addSpeedStep = 0.05f;
-
-    //可放置位置
-    public static List<Vector3> placeablePosition 
-        = new List<Vector3> { new Vector3(-1f, -0.1f, -2f), new Vector3(1f, -0.1f, -2f) };
-    public static List<float> heightPosition 
-        = new List<float> { 0, 0.05f, 0.2f };
-
-    //地块预制体
-    public static GameObject LandPrefab = Resources.Load<GameObject>("Prefabs/LandPrefab");
-
-    //初始化位置 31.5
-    public static Vector3 initPosition = new Vector3(100f, 1.3f, 0f);
-    //下一个地块启动位置
-    public static Vector3 nextLandMovePosition = new Vector3(-6.5f, 1.3f, 0f);
-    //销毁位置
-    public static Vector3 destroyPosition = new Vector3(-999f, 1.3f, 0f);
-    //默认缩放
-    public static Vector3 defaultScale = new Vector3(16f, 16f, 1f);
-
-    public static LandController getLand(bool isEmpty)
+    public override CarrierController getCarrier(bool isEmpty)
     {
-        GameObject land = Object.Instantiate(LandPrefab);
-        LandController lc = land.GetComponent<LandController>();
+        GameObject land = Object.Instantiate(prefab);
+        CarrierController lc = land.GetComponent<CarrierController>();
         lc.init(initPosition, destroyPosition);
         if (!isEmpty)
             putEntity(lc);
         lc.transform.localScale = defaultScale;
         return lc;
     }
-    public static List<LandController> getStartLands()
+    public override List<CarrierController> getStartCarriers()
     {
-        List<LandController> landList = new List<LandController>(3);
-        LandController startLand = getLand(true);
-        startLand.setPosition(new Vector3(16f,1.3f,0f));
+        List<CarrierController> landList = new List<CarrierController>(3);
+        CarrierController startLand = getCarrier(true);
+        startLand.setPosition(new Vector3(16f, 1.3f, 0f));
         landList.Add(startLand);
-        landList.Add(getLand(false));
-        landList.Add(getLand(false));
+        landList.Add(getCarrier(false));
+        landList.Add(getCarrier(false));
         return landList;
     }
-    private static void putEntity(LandController lc)
+    public override void putEntity(CarrierController lc)
     {
         int entityNum = 0;
         float f = Random.Range(0f, 1f);
-        if(f < 0.2)
+        if (f < 0.2)
             return;
         if (f < 0.4)
             entityNum = 1;
         else
             entityNum = 2;
-        List<int> positionIndexList = new List<int> { 0, 1};
-        for(int i = 0;i < entityNum; i++)
+        List<int> positionIndexList = new List<int> { 0, 1 };
+        for (int i = 0; i < entityNum; i++)
         {
             int positionIndex = positionIndexList[Random.Range(0, positionIndexList.Count)];
             positionIndexList.Remove(positionIndex);
 
-            if(Random.Range(0f, 1f) < isCactu)
+            if (Random.Range(0f, 1f) < isCactu)
             {
                 GameObject cactu = CactuFactory.getCactu();
                 lc.addEntity(cactu, placeablePosition[positionIndex]);
@@ -94,22 +115,13 @@ public static class CactuFactory
     {
         GameObject cactu = Object.Instantiate(CactuPrefab);
         cactu.transform.localScale = defaultScale;
-        Vector2 spriteSize = setSprite(cactu);
-        setBoxCollider(cactu, spriteSize);
-        return cactu;
-    }
-    private static Vector2 setSprite(GameObject cactu)
-    {
+
         int spriteIndex = Random.Range(0, 10);
         Sprite sprite = CactuFactory.cactuSprites.Find(p => p.name == ("Cactus_" + spriteIndex.ToString()));
         cactu.GetComponent<SpriteRenderer>().sprite = sprite;
-        return new Vector2(sprite.bounds.size.x, sprite.bounds.size.y);
-    }
-    private static void setBoxCollider(GameObject cactu, Vector2 spriteSize)
-    {
-        cactu.AddComponent<BoxCollider>();
-        BoxCollider bc = cactu.GetComponent<BoxCollider>();
-        bc.size = new Vector3(spriteSize.x, spriteSize.y, 1f);
+
+        cactu.AddComponent<PolygonCollider2D>();
+        return cactu;
     }
 }
 
@@ -123,5 +135,89 @@ public static class PterosaurFactory
         GameObject pterosaur = Object.Instantiate(PterosaurPrefab);
         pterosaur.transform.localScale = defaultScale;
         return pterosaur;
+    }
+}
+
+public class SkyFactory : CarrierFactory
+{
+    public SkyFactory()
+    {
+        width = 12.25f;
+        baseSpeed = 8f;
+        //可放置位置
+        placeablePosition = new List<Vector3> { new Vector3(-0.6f, 0, 1f), new Vector3(0.6f, 0, 1f) };
+        heightPosition = new List<float> { -2,2 };
+        //地块预制体
+        prefab = Resources.Load<GameObject>("Prefabs/SkyPrefab");
+        //初始化位置
+        initPosition = new Vector3(100f, 5f, 1f);
+        //销毁位置
+        destroyPosition = new Vector3(-999f, 5f, 1f);
+        //默认缩放
+        defaultScale = new Vector3(10f, 1.5f, 1f);
+    }
+
+    public override CarrierController getCarrier(bool isEmpty)
+    {
+        GameObject sky = Object.Instantiate(prefab);
+        CarrierController sc = sky.GetComponent<CarrierController>();
+        sc.init(initPosition, destroyPosition);
+        if (!isEmpty)
+            putEntity(sc);
+        sc.transform.localScale = defaultScale;
+        return sc;
+    }
+    public override List<CarrierController> getStartCarriers()
+    {
+        List<CarrierController> skyList = new List<CarrierController>(3);
+        CarrierController cc = getCarrier(true);
+        cc.setPosition(new Vector3(6,5,1));
+        skyList.Add(cc);
+        skyList.Add(getCarrier(false));
+        skyList.Add(getCarrier(false));
+        return skyList;
+    }
+    public override void putEntity(CarrierController sc)
+    {
+        int entityNum = 0;
+        float f = Random.Range(0f, 1f);
+        if (f < 0.4)
+            entityNum = 1;
+        else
+            entityNum = 2;
+        List<int> positionIndexList = new List<int> { 0, 1 };
+        for (int i = 0; i < entityNum; i++)
+        {
+            int positionIndex = positionIndexList[Random.Range(0, positionIndexList.Count)];
+            positionIndexList.Remove(positionIndex);
+
+            GameObject cloud = CloudFactory.getCloud();
+            float height = heightPosition[Random.Range(0, heightPosition.Count)];
+            Vector3 position = placeablePosition[positionIndex];
+            position.y = height;
+            sc.addEntity(cloud, position);
+        }
+    }
+}
+
+public static class CloudFactory
+{
+    public static GameObject CloudPrefab = Resources.Load<GameObject>("Prefabs/CloudPrefab");
+    public static List<Sprite> cloudSprites = new List<Sprite>(Resources.LoadAll<Sprite>("EntityRes/Cloud"));
+    public static Vector3 defaultScale = new Vector3(1f, 1f);
+
+    public static GameObject getCloud()
+    {
+        GameObject cloud = Object.Instantiate(CloudPrefab);
+        cloud.transform.localScale = defaultScale;
+
+        int spriteIndex = Random.Range(0, 3);
+        Sprite sprite = CloudFactory.cloudSprites[spriteIndex];
+        cloud.GetComponent<SpriteRenderer>().sprite = sprite;
+        if(spriteIndex == 0)
+            cloud.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+
+        cloud.AddComponent<PolygonCollider2D>();
+        return cloud;
     }
 }
